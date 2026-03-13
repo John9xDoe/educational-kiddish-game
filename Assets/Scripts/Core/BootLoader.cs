@@ -5,7 +5,9 @@ using System.Collections;
 public class BootLoader : MonoBehaviour
 {
     [SerializeField] private float delay = 2f;
-    [SerializeField] private string nextSceneName = "MainMenu";
+    [SerializeField] private string nextSceneName = SceneNames.GameSelect;
+
+    private bool isLoading;
 
     private void Start()
     {
@@ -14,13 +16,11 @@ public class BootLoader : MonoBehaviour
 
     private IEnumerator LoadNextScene()
     {
+        if (isLoading) yield break;
+        isLoading = true;
+
         yield return new WaitForSeconds(delay);
 
-        AsyncOperation operation = SceneManager.LoadSceneAsync(nextSceneName);
-
-        while (!operation.isDone)
-        {
-            yield return null;
-        }
+        yield return SceneManager.LoadSceneAsync(nextSceneName);
     }
 }
